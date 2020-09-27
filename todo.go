@@ -11,7 +11,10 @@ import (
 )
 
 const (
-	FILENAME         string = ".todo" // stored in user's home directory
+
+	/** Stored in user's home directory **/
+
+	FILENAME         string = ".todo"
 	COMPLETEPREFIX   string = "[x] "
 	INCOMPLETEPREFIX string = "[ ] "
 )
@@ -33,7 +36,7 @@ func main() {
 	flag.Parse()
 
 	list := loadList()
-	maxId := len(*list) - 1
+	maxID := len(*list) - 1
 
 	if flag.NFlag() == 0 && flag.NArg() == 0 {
 		list.printIncomplete() // default when no args
@@ -45,13 +48,13 @@ func main() {
 	}
 
 	if *c {
-		list.markComplete(parseIds(flag.Args(), maxId, -1)) // -c id...
+		list.markComplete(parseIds(flag.Args(), maxID, -1)) // -c id...
 
 	} else if *i {
-		list.markIncomplete(parseIds(flag.Args(), maxId, -1)) // -i id...
+		list.markIncomplete(parseIds(flag.Args(), maxID, -1)) // -i id...
 
 	} else if *e {
-		id := parseIds(flag.Args(), maxId, 1)[0]
+		id := parseIds(flag.Args(), maxID, 1)[0]
 		desc := parseDesc(flag.Args()[1:])
 		split := strings.Split(desc, "/")
 		if len(split) == 4 && split[0] == "" && split[3] == "" {
@@ -61,14 +64,14 @@ func main() {
 		}
 
 	} else if *s {
-		ids := parseIds(flag.Args(), maxId, 2)
+		ids := parseIds(flag.Args(), maxID, 2)
 		list.swap(ids[0], ids[1]) // -s id id
 
 	} else if *r {
 		if flag.NArg() == 0 {
 			list.removeComplete() // -r
 		} else {
-			list.remove(parseIds(flag.Args(), maxId, -1)) // -r id...
+			list.remove(parseIds(flag.Args(), maxID, -1)) // -r id...
 		}
 
 	} else {
@@ -105,14 +108,14 @@ func buildFilepath() string {
 	return usr.HomeDir + "/" + FILENAME
 }
 
-func parseIds(ss []string, maxId, expected int) []int {
+func parseIds(ss []string, maxID, expected int) []int {
 	var ids []int
 	for i, s := range ss {
 		if expected >= 0 && i == expected {
 			break
 		}
 		id, err := strconv.ParseInt(s, 10, 0)
-		if err != nil || id < 0 || int(id) > maxId {
+		if err != nil || id < 0 || int(id) > maxID {
 			die("invalid id \"%v\"", s)
 		}
 		ids = append(ids, int(id))
